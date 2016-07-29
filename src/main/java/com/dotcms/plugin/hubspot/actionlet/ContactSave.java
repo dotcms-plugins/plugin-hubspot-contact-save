@@ -42,9 +42,9 @@ public class ContactSave extends WorkFlowActionlet {
     @Override
     public List<WorkflowActionletParameter> getParameters() {
         List<WorkflowActionletParameter> params = new ArrayList<>();
-        params.add(new WorkflowActionletParameter("fieldsMapping", "Hubspot Fields Mapping", "", true));
-        params.add(new WorkflowActionletParameter("portalId", "HubSpot Portal Id", PORTAL_ID, true));
-        params.add(new WorkflowActionletParameter("formId", "HubSpot Form Id", HUBSPOT_FORM_ID, true));
+        params.add(new WorkflowActionletParameter(PARAMETER_FIELDS_MAPPING, "Hubspot Fields Mapping", "", true));
+        params.add(new WorkflowActionletParameter(PARAMETER_PORTAL_ID, "HubSpot Portal Id", PORTAL_ID, true));
+        params.add(new WorkflowActionletParameter(PARAMETER_FORM_ID, "HubSpot Form Id", HUBSPOT_FORM_ID, true));
         return params;
     }
 
