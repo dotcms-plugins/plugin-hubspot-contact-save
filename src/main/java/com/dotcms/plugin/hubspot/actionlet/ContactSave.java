@@ -14,7 +14,6 @@ import com.dotmarketing.util.UtilMethods;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ public class ContactSave extends WorkFlowActionlet {
     //https://forms.hubspot.com/uploads/form/v2/:portal_id/:form_guid
     private final String POST_URL = "https://forms.hubspot.com/uploads/form/v2";
     private final String PORTAL_ID = "2389934";
-    private final String HUBSPOT_FORM_ID = "11348411-6dde-4f26-9be5-f365cdda7a85";
 
     private final String PARAMETER_FIELDS_MAPPING = "fieldsMapping";
     private final String PARAMETER_PORTAL_ID = "portalId";
@@ -39,12 +37,17 @@ public class ContactSave extends WorkFlowActionlet {
     private final String SPLIT_STRING = ",";
     private final String SPLIT_MAPPING_STRING = ":";
 
+    /**
+     * Returns the list of parameters required in order to set up this Actionlet inside a Workflow Action
+     *
+     * @return List of attributes required for the set up of this Actionlet
+     */
     @Override
     public List<WorkflowActionletParameter> getParameters() {
         List<WorkflowActionletParameter> params = new ArrayList<>();
         params.add(new WorkflowActionletParameter(PARAMETER_FIELDS_MAPPING, "Hubspot Fields Mapping", "", true));
         params.add(new WorkflowActionletParameter(PARAMETER_PORTAL_ID, "HubSpot Portal Id", PORTAL_ID, true));
-        params.add(new WorkflowActionletParameter(PARAMETER_FORM_ID, "HubSpot Form Id", HUBSPOT_FORM_ID, true));
+        params.add(new WorkflowActionletParameter(PARAMETER_FORM_ID, "HubSpot Form Id", "", true));
         return params;
     }
 
@@ -58,36 +61,29 @@ public class ContactSave extends WorkFlowActionlet {
         return "This actionlet will post content from a Content entry to a Hubspot Contact form.";
     }
 
+    /**
+     * This method reads the parameters set on this Actionlet (<strong>Hubspot Portal Id</strong>, <strong>Hubspot Form Id</strong>
+     * and the <strong>Hubspot Fields Mapping</strong>) and executes a post call to the Hubspot API with the field values
+     * of the processed Contentlet in order to create a Hubspot contact Form entry.
+     * <br>
+     * <br>
+     * On Hubspot each field of the contact form have an id, in order to map each of the fields of the
+     * Content Type using this Actionlet with those Hubspot fields we use the <strong>Hubspot Fields Mapping</strong>
+     * parameter, with that parameter we map the dotCMS field varname with the hotspot Contact Form field id.
+     * <br>
+     * <strong>Example:</strong> dotCMSFieldVarname1:hotspotFieldId1, dotCMSFieldVarname2:hotspotFieldId2, dotCMSFieldVarname3:hotspotFieldId3
+     * <br>
+     * <strong>NOTE:</strong> Only mapped fields are going to be sent to the Hubspot API
+     *
+     * @param processor
+     * @param parameters
+     * @throws WorkflowActionFailureException
+     */
     @Override
     public void executeAction(WorkflowProcessor processor, Map<String, WorkflowActionClassParameter> parameters) throws WorkflowActionFailureException {
 
         //Get the content we want to process
         Contentlet contentletToProcess = processor.getContentlet();
-
-        Map<String, String> parametersMap = new HashMap<>();
-
-        try {
-            //TODO: getParameters() VS parameters ???
-            //TODO: getParameters() VS parameters ???
-            //TODO: getParameters() VS parameters ???
-
-            //TODO: Can I just parameters.get(PARAMETER_PORTAL_ID).getValue() --> This handle the default value???
-
-            //Read the Actionlet parameters
-            for ( WorkflowActionletParameter param : getParameters() ) {
-                String paramKey = param.getKey();
-                String paramVal = parameters.get(paramKey).getValue();
-
-                if ( !UtilMethods.isSet(paramVal) ) {
-                    paramVal = param.getDefaultValue();
-                }
-
-                parametersMap.put(paramKey, paramVal);
-            }
-        } catch (Exception e) {
-            Logger.error(this.getClass(), e.getMessage(), e);
-            throw new WorkflowActionFailureException(e.getMessage(), e);
-        }
 
         //Create the client and post method in order to submit the content to the hubspot API
         HttpClient client = new HttpClient();
@@ -96,22 +92,26 @@ public class ContactSave extends WorkFlowActionlet {
          https://forms.hubspot.com/uploads/form/v2/:portal_id/:form_guid
          */
         PostMethod postMethod = new PostMethod(POST_URL +
-                "/" + parametersMap.get(PARAMETER_PORTAL_ID) +
-                "/" + parametersMap.get(PARAMETER_FORM_ID));
+                "/" + parameters.get(PARAMETER_PORTAL_ID).getValue() +
+                "/" + parameters.get(PARAMETER_FORM_ID).getValue());
 
         //Prepare the post parameters using the mapping between the contentlet and the Hubspot fields
-        String fieldsMapping = parametersMap.get(PARAMETER_FIELDS_MAPPING);//dotCMSField1:prop1, dotCMSField2:prop2
+        String fieldsMapping = parameters.get(PARAMETER_FIELDS_MAPPING).getValue().trim();//dotCMSField1:prop1, dotCMSField2:prop2
         String[] fieldsMappingArray = fieldsMapping.split(SPLIT_STRING);
         for ( String mapping : fieldsMappingArray ) {
-            String fields[] = mapping.split(SPLIT_MAPPING_STRING);
-            String dotCMSVarName = fields[0];
-            String hubspotProperty = fields[1];
+            mapping = mapping.trim();
+            if ( UtilMethods.isSet(mapping) ) {
 
-            //Getting the dotCMS field value
-            String fieldValue = contentletToProcess.getStringProperty(dotCMSVarName);
-            if ( UtilMethods.isSet(fieldValue) ) {
-                //Add the form parameter for the post call
-                postMethod.addParameter(hubspotProperty, fieldValue);
+                String fields[] = mapping.split(SPLIT_MAPPING_STRING);
+                String dotCMSVarName = fields[0].trim();
+                String hubspotProperty = fields[1].trim();
+
+                //Getting the dotCMS field value
+                String fieldValue = contentletToProcess.getStringProperty(dotCMSVarName);
+                if ( UtilMethods.isSet(fieldValue) ) {
+                    //Add the form parameter for the post call
+                    postMethod.addParameter(hubspotProperty, fieldValue);
+                }
             }
         }
 
@@ -122,6 +122,8 @@ public class ContactSave extends WorkFlowActionlet {
             int responseStatusCode = postMethod.getStatusCode();
             if ( responseStatusCode == HttpStatus.SC_OK || responseStatusCode == HttpStatus.SC_NO_CONTENT ) {//Everything ok...
                 Logger.info(this.getClass(), "Successfully submit to Hubspot Contact Form");
+            } else {
+                Logger.error(this.getClass(), "Error submitting to Hubspot Contact Form. Response code [" + responseStatusCode + "].");
             }
         } catch (IOException e) {
             Logger.error(this.getClass(), e.getMessage(), e);
