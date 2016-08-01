@@ -3,16 +3,18 @@
 This Actionlet allows to post content from a Content entry to a Hubspot Contact form using the Hubspot API.
 
 ## How to install the plugin:
- * Generate the OSGI plugin jar file
+ * Generate the OSGI plugin jar file:
+ 
  ```
  ./gradlew jar
  ```
+ 
  The command above will generate the plugin jar file under *build/libs/plugin-hubspot-contact-save-0.1.jar*
  * Install the OSGI plugin: http://dotcms.com/docs/latest/osgi-plugins
+ * Create the Content Type we will use to create and send content to Hubspot
  * Add the created Actionlet by the OSGI (**Hubspot Contact Form**) to a Workflow (The configuration parameters for the
  created Actionlet are after these steps)
- * Create the Content Type we will use to create and send content to Hubspot
- * Add to that new created Content Type the Workflow that contains the **"Hubspot Contact Form"**
+ * Add to the new created Content Type the Workflow that contains the **"Hubspot Contact Form"**
 
 ## Actionlet parameters:
 
