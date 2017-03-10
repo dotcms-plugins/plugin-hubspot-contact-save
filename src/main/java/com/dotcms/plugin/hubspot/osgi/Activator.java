@@ -3,7 +3,7 @@ package com.dotcms.plugin.hubspot.osgi;
 import com.dotcms.plugin.hubspot.actionlet.ContactSave;
 import com.dotcms.repackage.org.apache.logging.log4j.LogManager;
 import com.dotcms.repackage.org.apache.logging.log4j.core.LoggerContext;
-import com.dotcms.repackage.org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleContext;
 import com.dotmarketing.loggers.Log4jUtil;
 import com.dotmarketing.osgi.GenericBundleActivator;
 
