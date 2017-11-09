@@ -47,7 +47,7 @@ public class ContactSave extends WorkFlowActionlet {
         List<WorkflowActionletParameter> params = new ArrayList<>();
         params.add(new WorkflowActionletParameter(PARAMETER_FIELDS_MAPPING, "Hubspot Fields Mapping", "", true));
         params.add(new WorkflowActionletParameter(PARAMETER_PORTAL_ID, "HubSpot Portal Id", PORTAL_ID, true));
-        params.add(new WorkflowActionletParameter(PARAMETER_FORM_ID, "HubSpot Form Id", "", true));
+        params.add(new WorkflowActionletParameter(PARAMETER_FORM_ID, "HubSpot Form Id", "", false));
         return params;
     }
 
@@ -58,7 +58,7 @@ public class ContactSave extends WorkFlowActionlet {
 
     @Override
     public String getHowTo() {
-        return "This actionlet will post content from a Content entry to a Hubspot Contact form.";
+        return "This actionlet will post content from a Content entry to a Hubspot Contact form.  formId will be read from the contentlet.formId field if it exists, otherwise it will take what is entered below.";
     }
 
     /**
@@ -91,9 +91,18 @@ public class ContactSave extends WorkFlowActionlet {
          https://developers.hubspot.com/docs/methods/forms/submit_form
          https://forms.hubspot.com/uploads/form/v2/:portal_id/:form_guid
          */
+        
+        
+        final String formId = (contentletToProcess.get("formId")!=null) 
+            ? contentletToProcess.getStringProperty("formId")
+            : parameters.get(PARAMETER_FORM_ID).getValue();
+
+        
+        
+        
         PostMethod postMethod = new PostMethod(POST_URL +
                 "/" + parameters.get(PARAMETER_PORTAL_ID).getValue() +
-                "/" + parameters.get(PARAMETER_FORM_ID).getValue());
+                "/" + formId);
 
         //Prepare the post parameters using the mapping between the contentlet and the Hubspot fields
         String fieldsMapping = parameters.get(PARAMETER_FIELDS_MAPPING).getValue().trim();//dotCMSField1:prop1, dotCMSField2:prop2
