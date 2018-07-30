@@ -1,15 +1,14 @@
 package com.dotcms.plugin.hubspot.osgi;
 
 import com.dotcms.plugin.hubspot.actionlet.ContactSave;
-import com.dotcms.repackage.org.apache.logging.log4j.LogManager;
-import com.dotcms.repackage.org.apache.logging.log4j.core.LoggerContext;
-import org.osgi.framework.BundleContext;
 import com.dotmarketing.loggers.Log4jUtil;
 import com.dotmarketing.osgi.GenericBundleActivator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.osgi.framework.BundleContext;
 
 /**
- * @author Jonathan Gamba
- *         7/29/16
+ * @author Jonathan Gamba 7/29/16
  */
 public class Activator extends GenericBundleActivator {
 
@@ -21,10 +20,11 @@ public class Activator extends GenericBundleActivator {
         //Initializing log4j...
         LoggerContext dotcmsLoggerContext = Log4jUtil.getLoggerContext();
         //Initialing the log4j context of this plugin based on the dotCMS logger context
-        pluginLoggerContext = (LoggerContext) LogManager.getContext(this.getClass().getClassLoader(),
-                false,
-                dotcmsLoggerContext,
-                dotcmsLoggerContext.getConfigLocation());
+        pluginLoggerContext = (LoggerContext) LogManager
+                .getContext(this.getClass().getClassLoader(),
+                        false,
+                        dotcmsLoggerContext,
+                        dotcmsLoggerContext.getConfigLocation());
 
         //Initializing services...
         initializeServices(bundleContext);
