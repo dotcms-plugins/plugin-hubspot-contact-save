@@ -8,17 +8,15 @@ version = '0.1'
 
 
 repositories {
-	maven {
-        url "http://repo.dotcms.com/artifactory/libs-release"
-    }
+    maven { url "http://repo.dotcms.com/artifactory/libs-release" }
+    maven { url "http://repo.dotcms.com/artifactory/libs-snapshot-local" }
 }
 
 dependencies {
 	compile fileTree(dir: 'src/main/resources/libs', include: '*.jar')
-	compile (group: 'com.dotcms', name: 'dotcms', version: '3.5.1'){
-		transitive = true
-	}
-	providedCompile "javax.servlet:servlet-api:2.5"
+  compile (group: 'com.dotcms', name: 'dotcms', version: '4.2.0'){
+        transitive = true
+    }
 }
 
 jar {
@@ -26,7 +24,7 @@ jar {
         name = 'Hubspot contact post'
         instruction 'Bundle-Vendor', 'dotcms'
         instruction 'Bundle-Description', 'dotCMS OSGI Actionlet plugin to post content from a Content entry to a Hubspot Contact form'
-        instruction 'Bundle-DocURL', 'http://www.dotcms.com'
+        instruction 'Bundle-DocURL', 'https://dotcms.com'
         instruction 'Bundle-Activator', 'com.dotcms.plugin.hubspot.osgi.Activator'
         instruction 'DynamicImport-Package', '*'
         instruction 'Import-Package', '*;version=0'
