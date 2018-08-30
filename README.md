@@ -1,6 +1,6 @@
 # New Home
 
-This repo is archvied - The latest version of this plugin can be found : https://github.com/dotcms-plugins
+This repo is archvied - The latest version of this plugin can be found : https://github.com/dotcms-plugins/plugin-hubspot-contact-save
 
 
 
