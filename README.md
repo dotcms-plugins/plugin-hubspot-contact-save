@@ -1,4 +1,4 @@
-#New Home
+# New Home
 
 This repo is archvied - The latest version of this plugin can be found : https://github.com/dotcms-plugins
 
