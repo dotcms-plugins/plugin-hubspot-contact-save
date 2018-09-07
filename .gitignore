@@ -3,3 +3,5 @@ build
 #IntelliJ Idea
 .idea/
 *.iml
+/bin/
+/.gradle/
