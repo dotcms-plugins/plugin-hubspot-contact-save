@@ -28,7 +28,7 @@ public class ContactSave extends WorkFlowActionlet {
     //https://developers.hubspot.com/docs/methods/forms/submit_form
     //https://forms.hubspot.com/uploads/form/v2/:portal_id/:form_guid
     private final String POST_URL = "https://forms.hubspot.com/uploads/form/v2";
-    private final String PORTAL_ID = "2389934";
+    private final String PORTAL_ID = "";
 
     private final String PARAMETER_FIELDS_MAPPING = "fieldsMapping";
     private final String PARAMETER_PORTAL_ID = "portalId";
