@@ -1,12 +1,6 @@
-# New Home
-
-This repo is archvied - The latest version of this plugin can be found : https://github.com/dotcms-plugins/plugin-hubspot-contact-save
 
 
-
-
-
-## Archived plugin-hubspot-contact-save
+## plugin-hubspot-contact-save
 
 This Actionlet allows to post content from a Content entry to a Hubspot Contact form using the Hubspot API.
 
